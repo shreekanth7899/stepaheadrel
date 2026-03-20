@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StepAhead – Way for Excellence</title>
+  <link rel="icon" href="Images/SAlogo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Clash+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="logo" href="#" onclick="showPage('home'); return false;">
+        <img src="Images/stepahead_logo.png" class="logo-img">
+      </a>
+      <ul class="nav-links">
+        <li><a href="#" onclick="showPage('home'); return false;" data-page="home" class="current">Home</a></li>
+        <li><a href="#" onclick="showPage('home', 'why'); return false;" data-page="home">Why Choose StepAhead</a></li>
+        <li><a href="#" onclick="showPage('home', 'services'); return false;" data-page="home">Our Services</a></li>
+        <li><a href="#" onclick="showPage('home', 'clients'); return false;" data-page="home">Our Clients</a></li>
+        <li><a href="#" onclick="showPage('livebatch'); return false;" data-page="livebatch" class="nav-live">&#128308; Live Batch</a></li>
+        <li><a href="#" onclick="showPage('contact'); return false;" data-page="contact" class="nav-cta">Contact Us</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" onclick="toggleMobile()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#" onclick="showPage('home'); toggleMobile(); return false;">Home</a></li>
+      <li><a href="#" onclick="showPage('home', 'why'); toggleMobile(); return false;">Why Choose StepAhead</a></li>
+      <li><a href="#" onclick="showPage('home', 'services'); toggleMobile(); return false;">Our Services</a></li>
+      <li><a href="#" onclick="showPage('home', 'clients'); toggleMobile(); return false;">Our Clients</a></li>
+      <li><a href="#" onclick="showPage('livebatch'); toggleMobile(); return false;">&#128308; Live Batch</a></li>
+      <li><a href="#" onclick="showPage('contact'); toggleMobile(); return false;">Contact Us</a></li>
+    </ul>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div id="home" class="page active">
+    <section class="hero">
+      <div class="hero-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
+      <div class="hero-grid"></div>
+      <div class="hero-inner container">
+        <div class="hero-content">
+          <div class="hero-tag"><span class="hero-tag-dot"></span>IT Training &amp; IT Solutions</div>
+          <h1>StepAhead –<br><span>Empowering Careers</span><br>in Technology</h1>
+          <p>Industry-focused training, real-world projects, and career support for students and professionals ready to lead in the digital era.</p>
+          <div class="hero-btns">
+            <a href="#" class="btn btn-primary" onclick="showPage('home', 'services'); return false;">Explore Our Services</a>
+            <a href="#" class="btn btn-live pulse-btn" onclick="showPage('livebatch'); return false;">&#128308; Join Live Batch</a>
+            <a href="#" class="btn btn-secondary" onclick="showPage('contact'); return false;">Get in Touch</a>
+          </div>
+          <div class="hero-stats">
+            <div class="hstat"><div class="hstat-num">500+</div><div class="hstat-label">Students Trained</div></div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-cards-stack">
+            <div class="hcard hcard-1"><div class="hcard-icon">&#9881;&#65039;</div><div class="hcard-title">DevOps Training</div><div class="hcard-sub">CI/CD · Docker · Kubernetes</div></div>
+            <div class="hcard hcard-2"><div class="hcard-icon">&#128202;</div><div class="hcard-title">Data Engineering</div><div class="hcard-sub">Pipelines · Analytics · Cloud</div></div>
+            <div class="hcard hcard-3"><div class="hcard-icon">&#128640;</div><div class="hcard-title">Career Support</div><div class="hcard-sub">Placement &amp; Mentorship</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="why-section" id="why">
+      <div class="container">
+        <div class="section-header text-center fade-up">
+          <div class="section-label">Why Choose Us</div>
+          <h2 class="section-title">Built Around <span>Your Success</span></h2>
+          <p class="section-sub">We go beyond theory — our programs are designed to prepare you for the real demands of the IT industry.</p>
+        </div>
+        <div class="why-grid">
+          <div class="why-card fade-up"><div class="why-icon">&#127919;</div><h3>Industry-Relevant Training Programs</h3><p>Our curriculum is continuously updated to match the latest tools, frameworks, and technologies demanded by top IT employers globally.</p></div>
+          <div class="why-card fade-up"><div class="why-icon">&#128295;</div><h3>Real-Time Project Experience</h3><p>Gain hands-on exposure through live projects that mirror real-world scenarios, helping you build a portfolio that impresses recruiters.</p></div>
+          <div class="why-card fade-up"><div class="why-icon">&#128104;&#8205;&#128188;</div><h3>Expert Mentors from the IT Industry</h3><p>Learn directly from seasoned professionals with years of hands-on experience in leading IT companies across diverse domains.</p></div>
+          <div class="why-card fade-up"><div class="why-icon">&#128203;</div><h3>Internship Opportunities</h3><p>Get direct access to structured programs that provide practical work experience and clear pathways to full-time employment.</p></div>
+          <div class="why-card fade-up"><div class="why-icon">&#129517;</div><h3>Career Guidance &amp; Placement Support</h3><p>From resume building to mock interviews and referrals — end-to-end career support until you land your dream role.</p></div>
+          <div class="why-card fade-up"><div class="why-icon">&#127760;</div><h3>Flexible Learning Modes</h3><p>Online and offline training options designed to fit your schedule — whether you're a student, working professional, or career switcher.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services-section" id="services">
+      <div class="container">
+        <div class="section-header text-center fade-up">
+          <div class="section-label">Our Services</div>
+          <h2 class="section-title">Programs Designed<br>for <span>Real Careers</span></h2>
+          <p class="section-sub">Each program is built with one clear goal: to make you job-ready and career-confident in your chosen IT domain.</p>
+        </div>
+        <div class="services-grid">
+          <div class="service-card fade-up">
+            <div class="service-header"><div class="service-icon-wrap si-blue">&#128187;</div><h3>IT Training Programs</h3></div>
+            <p>Comprehensive training covering core IT fundamentals, software development, programming languages, and system design — perfect for beginners and intermediates building a strong technical foundation.</p>
+            <span class="service-tag">Foundation</span>
+          </div>
+          <div class="service-card fade-up" style="position:relative;overflow:hidden;">
+            <div class="live-badge-corner">&#128308; LIVE NOW</div>
+            <div class="service-header"><div class="service-icon-wrap si-teal">&#9881;&#65039;</div><h3>DevOps Training</h3></div>
+            <p>Master the full DevOps lifecycle — CI/CD pipelines, Docker, Kubernetes, Terraform, Jenkins, Ansible, and cloud-native tools used by enterprises worldwide, with hands-on labs included.</p>
+            <span class="service-tag">Advanced</span>
+            <div style="margin-top:14px;"><a href="#" onclick="showPage('livebatch'); return false;" class="btn-know-more">View Live Batch &#8594;</a></div>
+          </div>
+          <div class="service-card fade-up">
+            <div class="service-header"><div class="service-icon-wrap si-purple">&#128202;</div><h3>Data Engineering &amp; Analytics Training</h3></div>
+            <p>Learn to design robust data pipelines, work with big data frameworks, build analytics dashboards, and transform raw data into actionable business insights using modern tools.</p>
+            <span class="service-tag">Advanced</span>
+          </div>
+          <div class="service-card fade-up">
+            <div class="service-header"><div class="service-icon-wrap si-orange">&#128295;</div><h3>Real-Time Project Training</h3></div>
+            <p>Work on live, industry-grade projects under expert supervision. Apply your skills in a realistic environment and leave with a strong portfolio that stands out to any hiring team.</p>
+            <span class="service-tag">Hands-on</span>
+          </div>
+          <div class="service-card fade-up">
+            <div class="service-header"><div class="service-icon-wrap si-green">&#127891;</div><h3>Internship Programs</h3></div>
+            <p>Structured internship programs offering real work experience, mentorship from industry professionals, and a strong pathway to full-time employment in the IT sector.</p>
+            <span class="service-tag">Career</span>
+          </div>
+          <div class="service-card fade-up">
+            <div class="service-header"><div class="service-icon-wrap si-indigo">&#129309;</div><h3>Career Mentorship</h3></div>
+            <p>One-on-one sessions with industry veterans covering career planning, skill gap analysis, interview preparation, resume reviews, and networking strategies tailored to your goals.</p>
+            <span class="service-tag">Career</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="clients-section" id="clients">
+      <div class="container">
+        <div class="section-header text-center fade-up">
+          <div class="section-label">Our Clients</div>
+          <h2 class="section-title">Trusted by <span>Leading Organizations</span></h2>
+          <p class="section-sub">We are proud to partner with forward-thinking companies who invest in talent and technology.</p>
+        </div>
+        <div class="clients-grid">
+          <div class="client-card fade-up"><div class="client-logo-wrap"><img src="Images/stepaheadbiomedical.png" alt="Client 1" class="client-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="client-placeholder"><span class="client-placeholder-icon">&#127970;</span><span class="client-placeholder-text">stepaheadbiomedical</span></div></div><div class="client-info"><div class="client-name">StepAhead Biomedical</div><div class="client-desc">Biomedical Training &amp; Services</div></div></div>
+          <div class="client-card fade-up"><div class="client-logo-wrap"><img src="Images/pqrs.png" alt="Client 2" class="client-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="client-placeholder"><span class="client-placeholder-icon">&#127970;</span><span class="client-placeholder-text">Pqrs</span></div></div><div class="client-info"><div class="client-name">PQR Solutions</div><div class="client-desc">HealthCare / Sales</div></div></div>
+          <div class="client-card fade-up"><div class="client-logo-wrap"><img src="Images/ninagagi.png" alt="Client 3" class="client-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="client-placeholder"><span class="client-placeholder-icon">&#127970;</span><span class="client-placeholder-text">Ninagagi</span></div></div><div class="client-info"><div class="client-name">Ninagagi</div><div class="client-desc">Industry / E-commerce</div></div></div>
+        </div>
+        <div class="trust-strip fade-up">
+          <div class="trust-item"><span class="trust-icon"></span> Verified Partners</div>
+          <div class="trust-divider"></div>
+          <div class="trust-item"><span class="trust-icon"></span> Long-Term Relationships</div>
+          <div class="trust-divider"></div>
+          <div class="trust-item"><span class="trust-icon"></span> Industry Recognition</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-cta">
+      <div class="container">
+        <h2>Ready to Take the Next Step?</h2>
+        <p>Have questions about our programs or looking to enroll? Send us a message or join our live DevOps batch.</p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+          <a href="#" class="btn btn-white" onclick="showPage('contact'); return false;">Send Us a Message &#8594;</a>
+          <a href="#" class="btn-live-outline" onclick="showPage('livebatch'); return false;">&#128308; Join Live DevOps Batch</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-grid">
+          <div class="footer-brand"><a class="logo" href="#" onclick="showPage('home'); return false;"><img src="Images/stepahead_logo.png" class="logo-img"></a><p>Empowering students and professionals with industry-focused IT training, real-world experience, and career development support.</p></div>
+          <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="#" onclick="showPage('home'); return false;">Home</a></li><li><a href="#" onclick="showPage('home', 'why'); return false;">Why Choose StepAhead</a></li><li><a href="#" onclick="showPage('home', 'services'); return false;">Our Services</a></li><li><a href="#" onclick="showPage('livebatch'); return false;">&#128308; Live Batch</a></li><li><a href="#" onclick="showPage('contact'); return false;">Contact</a></li></ul></div>
+          <div class="footer-col"><h4>Contact</h4><ul><li><a href="mailto:shreekanth.sharma@stepaheadxcellence.com">shreekanth.sharma@<br>stepaheadxcellence.com</a></li><li><a href="tel:+917899151988">+91 7899151988</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><p>&#169; 2026 StepAhead. All Rights Reserved.</p><p>IT Training &amp; IT Solutions</p></div>
+      </div>
+    </footer>
+  </div> 
+
+  <div id="livebatch" class="page">
+    <div class="page-top-pad">
+
+      <section class="course-hero">
+        <div class="course-hero-bg"></div>
+        <div class="container">
+          <div class="live-badge-pill">&#128308; BATCH 3 — NOW ENROLLING</div>
+          <h1 class="course-hero-title">DevOps Mastery<br><span>60-Day Live Training</span></h1>
+          <p class="course-hero-sub">From Zero to Production-Ready Engineer — 1.5 Hours Daily Live Sessions </p>
+          <div class="course-meta-strip">
+            <div class="cmeta"><span class="cmeta-icon">&#128197;</span><span>60 Days</span></div>
+            <div class="cmeta"><span class="cmeta-icon">&#9201;&#65039;</span><span>90 Min/Day</span></div>
+            <div class="cmeta"><span class="cmeta-icon">&#129514;</span><span>50 Hands-On Labs</span></div>
+            <div class="cmeta"><span class="cmeta-icon">&#127942;</span><span>Certificate</span></div>
+          </div>
+          <div class="course-hero-btns">
+            <button class="btn-enroll-hero" onclick="openRegModal()">Enroll Now — &#8377;4,999</button>
+            <a href="DevOps_60Day_Course.pdf" target="_blank" class="btn-brochure">&#128196; View Full Brochure</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="tech-strip">
+        <div class="container">
+          <p class="tech-strip-label">Technologies You'll Master</p>
+          <div class="tech-tags">
+            <span>Linux</span><span>Docker</span><span>Kubernetes</span><span>Terraform</span>
+            <span>Git &amp; GitHub</span><span>AWS</span><span>Azure</span><span>Jenkins</span>
+            <span>Grafana</span><span>Prometheus</span><span>ArgoCD</span><span>DevSecOps</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="course-section">
+        <div class="container">
+          <div class="section-header fade-up">
+            <div class="section-label">Why This Course</div>
+            <h2 class="section-title">Transform Your <span>Engineering Career</span></h2>
+          </div>
+          <div class="why-course-grid fade-up">
+            <div class="why-course-text">
+              <p>The world doesn't need more developers who simply write code. It needs engineers who understand how software breathes in production — how it is built, tested, secured, deployed, monitored, and scaled across thousands of nodes.</p>
+              <p>Every module is built around real-world scenarios drawn from companies like <strong>Netflix, Amazon, Spotify, and Uber</strong> — the organizations that invented and refined the DevOps culture. You will not be watching theory slides. You will be building things.</p>
+              <div class="stats-row">
+                <div class="stat-box"><div class="stat-num">200x</div><div class="stat-txt">More frequent deployments</div></div>
+                <div class="stat-box"><div class="stat-num">24x</div><div class="stat-txt">Faster incident recovery</div></div>
+                <div class="stat-box"><div class="stat-num">50%</div><div class="stat-txt">Fewer production failures</div></div>
+              </div>
+              <p class="salary-note">&#128176; <strong>Salary Range:</strong> &#8377;06–40 LPA in India &nbsp;|&nbsp; $90K–$160K globally</p>
+            </div>
+            <div class="why-course-points">
+              <div class="check-point"><span class="cp-icon">&#9989;</span><span>5 Hands-On Labs per module</span></div>
+              <div class="check-point"><span class="cp-icon">&#9989;</span><span>Capstone project reviewed by mentors</span></div>
+              <div class="check-point"><span class="cp-icon">&#9989;</span><span>GitHub portfolio you own outright</span></div>
+              <div class="check-point"><span class="cp-icon">&#9989;</span><span>Session recordings available</span></div>
+              <div class="check-point"><span class="cp-icon">&#9989;</span><span>Private community workspace</span></div>
+              <div class="check-point"><span class="cp-icon">&#9989;</span><span>Weekly 1-on-1 mentor reviews</span></div>
+              <div class="check-point"><span class="cp-icon">&#9989;</span><span>Course completion certificate</span></div>
+              <div class="check-point"><span class="cp-icon">&#9989;</span><span>Lifetime access to course updates</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="course-section modules-section">
+        <div class="container">
+          <div class="section-header text-center fade-up">
+            <div class="section-label">Course Curriculum</div>
+            <h2 class="section-title">10 Modules · <span>60 Days</span></h2>
+            <p class="section-sub">A structured journey from zero to production-ready engineer</p>
+          </div>
+          <div class="modules-grid fade-up">
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M1</div><div><div class="module-title">DevOps Foundations &amp; Culture</div><div class="module-days">Days 1–5</div></div></div>
+              <p>CALMS framework, Three Ways, CI/CD pipeline model, SRE vs DevOps, DevSecOps introduction, and modern toolchain overview. Learn how Amazon deploys 10,000+ times per day.</p>
+              <div class="module-tags"><span>CALMS</span><span>CI/CD</span><span>SRE</span></div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M2</div><div><div class="module-title">Linux for DevOps Engineers</div><div class="module-days">Days 6–15</div></div></div>
+              <p>Filesystem hierarchy, process management, networking fundamentals, shell scripting (2 deep-dive days), disk management, cron jobs, systemd, and Linux security hardening with SSH best practices.</p>
+              <div class="module-tags"><span>Bash</span><span>Networking</span><span>Security</span></div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M3</div><div><div class="module-title">Docker &amp; Containerization</div><div class="module-days">Days 16–22</div></div></div>
+              <p>Namespaces, cgroups, Dockerfiles with multi-stage builds, volumes, networking, Docker Compose for multi-container apps, container registries, Trivy image scanning, and production best practices.</p>
+              <div class="module-tags"><span>Docker</span><span>Compose</span><span>Trivy</span></div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M4</div><div><div class="module-title">Kubernetes &amp; Orchestration</div><div class="module-days">Days 23–31</div></div></div>
+              <p>Full K8s architecture, Pods/Deployments/Services, Ingress, Gateway API, ConfigMaps, Secrets, persistent storage (PV/PVC), RBAC, Helm, Kustomize, ArgoCD GitOps, and pod autoscaling (HPA/VPA/Cluster).</p>
+              <div class="module-tags"><span>Kubernetes</span><span>Helm</span><span>ArgoCD</span></div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M5</div><div><div class="module-title">Terraform &amp; Infrastructure as Code</div><div class="module-days">Days 32–38</div></div></div>
+              <p>HCL deep dive, remote state with S3/DynamoDB locking, reusable modules, multi-environment patterns, Terraform in CI/CD pipelines, Open Policy Agent compliance, and drift detection.</p>
+              <div class="module-tags"><span>Terraform</span><span>HCL</span><span>OPA</span></div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M6</div><div><div class="module-title">Git, GitHub &amp; GitOps</div><div class="module-days">Days 39–45</div></div></div>
+              <p>Git internals and object model, branching strategies (Gitflow, trunk-based, GitHub Flow), GitHub Actions CI/CD pipelines, OIDC auth, GitOps with ArgoCD and Flux, and custom GitHub Actions.</p>
+              <div class="module-tags"><span>GitHub Actions</span><span>GitOps</span><span>ArgoCD</span></div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M7</div><div><div class="module-title">AWS for DevOps Engineers</div><div class="module-days">Days 46–50</div></div></div>
+              <p>VPC architecture, IAM in depth, EC2/ECS/EKS/Lambda, S3/RDS/DynamoDB, CodePipeline/CodeBuild/CodeDeploy, CloudWatch Container Insights, GuardDuty, Security Hub, and AWS cost optimization.</p>
+              <div class="module-tags"><span>AWS</span><span>EKS</span><span>CodePipeline</span></div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M8</div><div><div class="module-title">Azure DevOps &amp; Microsoft Cloud</div><div class="module-days">Days 51–55</div></div></div>
+              <p>Azure Resource Manager, Bicep IaC, Azure AD and Managed Identities, AKS with Workload Identity, Azure DevOps YAML pipelines with approval gates, Azure Monitor, KQL queries, and Defender for Cloud.</p>
+              <div class="module-tags"><span>Azure</span><span>AKS</span><span>Bicep</span></div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M9</div><div><div class="module-title">Jenkins &amp; Advanced CI/CD</div><div class="module-days">Days 56–58</div></div></div>
+              <p>Jenkins architecture with JCasC, Declarative pipelines, Shared Libraries for reusable pipeline code, dynamic Kubernetes agents, Kaniko builds (no privileged mode), pipeline security with HashiCorp Vault.</p>
+              <div class="module-tags"><span>Jenkins</span><span>Kaniko</span><span>Vault</span></div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-header"><div class="module-num">M10</div><div><div class="module-title">Grafana, Prometheus &amp; Observability</div><div class="module-days">Days 59–60</div></div></div>
+              <p>Prometheus data model, PromQL, kube-prometheus stack, Grafana dashboards and unified alerting, Loki for log aggregation, Tempo for distributed tracing, and OpenTelemetry as the modern instrumentation standard.</p>
+              <div class="module-tags"><span>Prometheus</span><span>Grafana</span><span>OpenTelemetry</span></div>
+            </div>
+
+            <div class="module-card module-capstone">
+              <div class="module-header"><div class="module-num cap">&#127942;</div><div><div class="module-title">Capstone: Production-Ready Platform</div><div class="module-days">Final Week</div></div></div>
+              <p>Build a complete production-grade platform integrating every tool: Terraform-provisioned cloud infra, secure Kubernetes cluster, Jenkins + GitHub Actions CI/CD, microservices in Docker, GitOps via ArgoCD, and full Prometheus + Grafana + Loki + Tempo observability stack with security scanning at every stage.</p>
+              <div class="module-tags"><span>All Tools</span><span>Portfolio Project</span><span>30-min Demo</span></div>
+            </div>
+
+          </div>
+
+          <div class="brochure-cta fade-up">
+            <p>Want the complete day-by-day breakdown with all 50 hands-on labs?</p>
+            <a href="DevOps_60Day_Course.pdf" target="_blank" class="btn-brochure-lg">&#128196; Download Full Course Brochure</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing-section">
+        <div class="container">
+          <div class="section-header text-center fade-up">
+            <div class="section-label">Enroll Now</div>
+            <h2 class="section-title">Join <span>Batch 3</span></h2>
+            <p class="section-sub">Limited to 30 seats. Sessions run Mon–Sat, 90 min/day. Recordings available.</p>
+          </div>
+          <div class="pricing-card fade-up">
+            <div class="pricing-badge">Most Popular</div>
+            <div class="pricing-top">
+              <div class="pricing-icon">&#9881;&#65039;</div>
+              <div class="pricing-name">DevOps Mastery — Batch 3</div>
+              <div class="pricing-duration">60 Days · Live · 1.5 hrs/day</div>
+            </div>
+            <div class="pricing-amount">
+              <span class="price-currency">&#8377;</span>
+              <span class="price-value">4,999</span>
+              <span class="price-note">one-time</span>
+            </div>
+            <ul class="pricing-features">
+              <li>&#9989; 60 live instructor-led sessions with recordings</li>
+              <li>&#9989; 50 hands-on labs across 10 modules</li>
+              <li>&#9989; Private community workspace</li>
+              <li>&#9989; All course materials &amp; code repositories</li>
+              <li>&#9989; Weekly 1-on-1 progress reviews with mentor</li>
+              <li>&#9989; Capstone project review &amp; 30-min demo</li>
+              <li>&#9989; Course completion certificate</li>
+              <li>&#9989; GitHub portfolio repository you own</li>
+              <li>&#9989; Lifetime access to course updates</li>
+            </ul>
+            <button class="btn-enroll-main" onclick="openRegModal()">Enroll &amp; Pay &#8377;4,999</button>
+            <p class="pricing-note">Secure payment via Razorpay · UPI / Card / Net Banking accepted</p>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div class="footer-inner">
+          <div class="footer-grid">
+            <div class="footer-brand"><a class="logo" href="#" onclick="showPage('home'); return false;"><img src="Images/stepahead_logo.png" class="logo-img"></a><p>Empowering students and professionals with industry-focused IT training and career development support.</p></div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="#" onclick="showPage('home'); return false;">Home</a></li><li><a href="#" onclick="showPage('livebatch'); return false;">Live Batch</a></li><li><a href="#" onclick="showPage('home', 'services'); return false;">Our Services</a></li><li><a href="#" onclick="showPage('contact'); return false;">Contact</a></li></ul></div>
+            <div class="footer-col"><h4>Contact</h4><ul><li><a href="mailto:shreekanth.sharma@stepaheadxcellence.com">shreekanth.sharma@<br>stepaheadxcellence.com</a></li><li><a href="tel:+917899151988">+91 7899151988</a></li></ul></div>
+          </div>
+          <div class="footer-bottom"><p>&#169; 2026 StepAhead. All Rights Reserved.</p><p>IT Training &amp; IT Solutions</p></div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+
+  <div id="contact" class="page">
+    <div class="page-top-pad">
+      <div class="page-hero">
+        <div class="container">
+          <div class="section-label">Get in Touch</div>
+          <h1>Send Us a Message</h1>
+          <p>Have a question about our programs, courses, or career support? Fill in the form below and our team will get back to you within 24 hours.</p>
+        </div>
+      </div>
+      <div class="contact-body">
+        <div class="contact-grid">
+          <div class="cinfo-block fade-up">
+            <h3>Contact Information</h3>
+            <div class="cinfo-item"><div class="cinfo-icon">&#128231;</div><div><div class="cinfo-label">Email</div><div class="cinfo-val">shreekanth.sharma@stepaheadxcellence.com</div></div></div>
+            <div class="cinfo-item"><div class="cinfo-icon">&#128222;</div><div><div class="cinfo-label">Phone</div><div class="cinfo-val">+91 7899151988</div></div></div>
+            <div class="cinfo-item"><div class="cinfo-icon">&#127760;</div><div><div class="cinfo-label">Website</div><div class="cinfo-val">stepaheadxcellence.com</div></div></div>
+            <div class="cinfo-item"><div class="cinfo-icon">&#128205;</div><div><div class="cinfo-label">Location</div><div class="cinfo-val">No. 59/22, 2nd floor, Kamakya Layout, Bangalore - 560085</div></div></div>
+            <div class="cinfo-item"><div class="cinfo-icon">&#128336;</div><div><div class="cinfo-label">Office Hours</div><div class="cinfo-val">Mon – Sat: 9:00 AM – 9:00 PM IST</div></div></div>
+          </div>
+          <div class="form-card fade-up">
+            <div id="contactFormInner">
+              <div class="form-card-title">Send Us a Message</div>
+              <div class="form-card-sub">We'd love to hear from you. Fields marked * are required.</div>
+              <form id="contactForm" action="https://formspree.io/f/xreyggek" method="POST" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" name="_replyto" id="replyToField" value="" />
+                <div class="form-row">
+                  <div class="form-group"><label for="fname">Full Name *</label><input type="text" id="fname" name="name" placeholder="Your full name" required /></div>
+                  <div class="form-group"><label for="femail">Email Address *</label><input type="email" id="femail" name="email" placeholder="your@email.com" required oninput="document.getElementById('replyToField').value = this.value" /></div>
+                </div>
+                <div class="form-group"><label for="fphone">Phone Number</label><input type="tel" id="fphone" name="phone" placeholder="+91 00000 00000" /></div>
+                <div class="form-group"><label for="fsubject">Subject *</label>
+                  <select id="fsubject" name="subject" required>
+                    <option value="">What can we help you with?</option>
+                    <option>DevOps Mastery – Live Batch Enquiry</option>
+                    <option>IT Training Programs</option>
+                    <option>Data Engineering &amp; Analytics Training</option>
+                    <option>Real-Time Project Training</option>
+                    <option>Internship Programs</option>
+                    <option>Career Mentorship</option>
+                    <option>General Enquiry</option>
+                  </select>
+                </div>
+                <div class="form-group"><label for="fmessage">Message *</label><textarea id="fmessage" name="message" placeholder="Tell us more about what you're looking for..." required></textarea></div>
+                <button type="submit" class="btn-submit" id="submitBtn">Send Message &#8594;</button>
+                <p class="form-note">Your message is sent securely via Formspree directly to our team.</p>
+              </form>
+            </div>
+            <div class="form-success-msg" id="formSuccess">
+              <div class="check"></div>
+              <h3>Message Sent Successfully!</h3>
+              <p>Thank you for reaching out to StepAhead. We'll get back to you within 24 business hours at <strong>shreekanth.sharma@stepaheadxcellence.com</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer>
+        <div class="footer-inner">
+          <div class="footer-grid">
+            <div class="footer-brand"><a class="logo" href="#" onclick="showPage('home'); return false;"><img src="Images/stepahead_logo.png" class="logo-img"></a><p>Empowering students and professionals with industry-focused IT training and career development support.</p></div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="#" onclick="showPage('home'); return false;">Home</a></li><li><a href="#" onclick="showPage('home', 'why'); return false;">Why Choose StepAhead</a></li><li><a href="#" onclick="showPage('home', 'services'); return false;">Our Services</a></li><li><a href="#" onclick="showPage('livebatch'); return false;">Live Batch</a></li><li><a href="#" onclick="showPage('contact'); return false;">Contact</a></li></ul></div>
+            <div class="footer-col"><h4>Contact</h4><ul><li><a href="mailto:shreekanth.sharma@stepaheadxcellence.com">shreekanth.sharma@<br>stepaheadxcellence.com</a></li></ul></div>
+          </div>
+          <div class="footer-bottom"><p>&#169; 2026 StepAhead. All Rights Reserved.</p><p>IT Training &amp; IT solutions</p></div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+
+  
+  <div id="regModal" class="modal-overlay" onclick="closeRegModal(event)">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeRegModalDirect()">&times;</button>
+      <div id="regFormWrap">
+        <div class="modal-header">
+          <div class="modal-badge">&#128308; Batch 3 — DevOps Mastery</div>
+          <h2>Register &amp; Enroll</h2>
+          <p>Fill in your details. After registration you'll be redirected to complete payment of <strong>&#8377;4,999</strong> via Razorpay.</p>
+        </div>
+        <form id="regForm" onsubmit="handleRegistration(event)">
+          <div class="form-group">
+            <label for="reg_name">Full Name *</label>
+            <input type="text" id="reg_name" name="name" placeholder="Your full name" required />
+          </div>
+          <div class="form-group">
+            <label for="reg_email">Email Address (Gmail preferred) *</label>
+            <input type="email" id="reg_email" name="email" placeholder="yourname@gmail.com" required />
+          </div>
+          <div class="form-group">
+            <label for="reg_phone">Contact Number *</label>
+            <input type="tel" id="reg_phone" name="phone" placeholder="+91 00000 00000" required />
+          </div>
+          <div class="form-group">
+            <label for="reg_org">College / Organisation *</label>
+            <input type="text" id="reg_org" name="organisation" placeholder="e.g. VTU / TCS / Infosys" required />
+          </div>
+          <button type="submit" class="btn-enroll-main" id="regSubmitBtn" style="width:100%;">Proceed to Payment &#8594;</button>
+          <p class="form-note">Your data is sent directly to our team at shreekanth.sharma@stepaheadxcellence.com. Secure payment via Razorpay.</p>
+        </form>
+      </div>
+      <div id="regSuccess" style="display:none;" class="form-success-msg">
+        <div class="check"></div>
+        <h3>Registration Received!</h3>
+        <p>Thank you <span id="reg_success_name" style="font-weight:700;color:var(--blue);"></span>! Your details have been sent to our team. Completing payment now...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
