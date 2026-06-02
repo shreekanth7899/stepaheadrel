@@ -298,7 +298,7 @@
     /* ── ADMIN PANEL ── */
     #adminBtn {
       position: fixed; bottom: 16px; left: 16px; z-index: 500;
-      background: rgba(15,76,145,0.9); color: #fff;
+      /* background: rgba(15,76,145,0.9); color: #fff; */
       border: none; border-radius: 10px; padding: 8px 14px;
       font-size: 0.75rem; font-weight: 700; cursor: pointer;
       font-family: inherit;
@@ -376,11 +376,11 @@
     <p class="page-sub">Fill in your details to access the internship shortlisting assessment. Ensure your webcam is ready before starting.</p>
 
     <ul class="rules-list">
-      <li><span class="ri">📹</span> <span>Your <strong>webcam must be active</strong> throughout the test. Assessment will not start without camera access.</span></li>
-      <li><span class="ri">🚫</span> <span>Switching tabs or minimizing the window will trigger a <strong>warning</strong>. 2 violations = auto-submission.</span></li>
-      <li><span class="ri">🔒</span> <span>Questions are <strong>randomized and protected</strong>. Copying or right-clicking is disabled.</span></li>
-      <li><span class="ri">⏱️</span> <span><strong>45 minutes</strong> to answer 30 questions (MySQL · OOP · Linux · OS · Networks).</span></li>
-      <li><span class="ri">⭐</span> <span>Score <strong>25+/30</strong> to be shortlisted for the internship.</span></li>
+      <li><span class="ri"></span> <span>Your <strong>webcam must be active</strong> throughout the test. Assessment will not start without camera access.</span></li>
+      <li><span class="ri"></span> <span>Switching tabs or minimizing the window will trigger a <strong>warning</strong>. 2 violations = auto-submission.</span></li>
+      <li><span class="ri"></span> <span>Questions are <strong>randomized and protected</strong>. Copying or right-clicking is disabled.</span></li>
+      <li><span class="ri"></span> <span><strong>45 minutes</strong> to answer 30 questions (MySQL · OOP · Linux · OS · Networks).</span></li>
+      <!-- <li><span class="ri">⭐</span> <span>Score <strong>25+/30</strong> to be shortlisted for the internship.</span></li> -->
     </ul>
 
     <form id="regForm" onsubmit="proceedToCamera(event)">
@@ -416,7 +416,7 @@
 <!-- ═══════ SCREEN 2: CAMERA SETUP ═══════ -->
 <div class="screen" id="camScreen">
   <div class="card card-sm">
-    <div class="badge badge-green" style="margin-bottom:14px;">📹 Camera & Face Verification</div>
+    <div class="badge badge-green" style="margin-bottom:14px;">Camera & Face Verification</div>
     <h1 class="page-title" style="font-size:1.5rem;">Enable Your Webcam</h1>
     <p class="page-sub" style="margin-bottom:20px;">
       Your camera must be active and <strong>only your face</strong> must be visible throughout the test.
@@ -432,7 +432,7 @@
 
     <div class="face-check-box" id="faceCheckBox"></div>
 
-    <button class="btn btn-cam" id="startCamBtn" onclick="startCamera()">🎥 Enable Camera & Verify Face</button>
+    <button class="btn btn-cam" id="startCamBtn" onclick="startCamera()"> Enable Camera & Verify Face</button>
     <button class="btn btn-primary" id="startExamBtn" style="margin-top:12px; display:none;" onclick="startExam()">
       Start Assessment →
     </button>
@@ -465,19 +465,19 @@
     <div class="question-nav">
       <div class="qnav-title">Navigation</div>
       <div class="qnav-section">
-        <div class="qnav-section-title">🗄️ MySQL</div>
+        <div class="qnav-section-title"> MySQL</div>
         <div class="qnav-dots" id="navMySQL"></div>
       </div>
       <div class="qnav-section">
-        <div class="qnav-section-title">🧩 OOP</div>
+        <div class="qnav-section-title">OOP</div>
         <div class="qnav-dots" id="navOOP"></div>
       </div>
       <div class="qnav-section">
-        <div class="qnav-section-title">🐧 Linux</div>
+        <div class="qnav-section-title">Linux</div>
         <div class="qnav-dots" id="navLinux"></div>
       </div>
       <div class="qnav-section">
-        <div class="qnav-section-title">🌐 Networks & OS</div>
+        <div class="qnav-section-title"> Networks & OS</div>
         <div class="qnav-dots" id="navNetOS"></div>
       </div>
       <div class="qnav-legend">
@@ -511,7 +511,7 @@
 <!-- Video PIP during exam -->
 <div class="video-pip" id="videoPIP">
   <video id="pipVideo" autoplay muted playsinline></video>
-  <div class="pip-face-status ok" id="pipFaceStatus">✅ 1 face detected</div>
+  <div class="pip-face-status ok" id="pipFaceStatus">1 face detected</div>
 </div>
 
 <!-- Face alert banner (shown during exam) -->
@@ -528,7 +528,7 @@
 </div>
 
 <!-- Admin button + panel -->
-<button id="adminBtn" onclick="openAdmin()">⚙ Admin</button>
+<button id="adminBtn" onclick="openAdmin()"></button>
 <div class="admin-overlay" id="adminOverlay">
   <div class="admin-box">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
@@ -543,25 +543,11 @@
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════════════════════════
-   EMAILJS CONFIG
-   ══════════════════════════════════════════════════════════════════════
-   Steps:
-   1. Go to https://www.emailjs.com → sign up free
-   2. Add Service → connect Gmail → copy Service ID
-   3. Create Template "Admin Alert" — To Email = your Gmail (hardcoded)
-      Variables: {{student_name}} {{usn}} {{college}} {{student_email}}
-                 {{phone}} {{score}} {{status}} {{mysql}} {{oop}}
-                 {{linux}} {{netos}} {{violations}} {{face_violations}} {{timestamp}}
-   4. Create Template "Student Result" — To Email = {{student_email}}
-      Variables: {{student_name}} {{score}} {{status}} {{mysql}}
-                 {{oop}} {{linux}} {{netos}}
-   5. Account → General → copy Public Key
-   ══════════════════════════════════════════════════════════════════════ */
-const EMAILJS_PUBLIC_KEY       = 'YOUR_PUBLIC_KEY';          // ← replace
-const EMAILJS_SERVICE_ID       = 'YOUR_SERVICE_ID';          // ← replace
-const EMAILJS_ADMIN_TEMPLATE   = 'YOUR_ADMIN_TEMPLATE_ID';   // ← replace
-const EMAILJS_STUDENT_TEMPLATE = 'YOUR_STUDENT_TEMPLATE_ID'; // ← replace
+
+const EMAILJS_PUBLIC_KEY       = 'gmd3gjKFrzBkLv19e';          // ← replace
+const EMAILJS_SERVICE_ID       = 'service_qcki52o';          // ← replace
+const EMAILJS_ADMIN_TEMPLATE   = 'template_vui3tqm';   // ← replace
+const EMAILJS_STUDENT_TEMPLATE = 'template_yz0g45w'; // ← replace
 
 if (typeof emailjs !== 'undefined') emailjs.init(EMAILJS_PUBLIC_KEY);
 
@@ -681,7 +667,7 @@ async function startCamera() {
 
     // Load BlazeFace model
     checkBox.className  = 'face-check-box warn';
-    checkBox.textContent = '⏳ Loading face detection model...';
+    checkBox.textContent = 'Loading face detection model...';
 
     faceModel = await blazeface.load();
 
@@ -690,7 +676,7 @@ async function startCamera() {
 
   } catch (err) {
     alert('⚠️ Camera access denied or unavailable. You must enable your camera to take the test.');
-    btn.textContent = '🎥 Enable Camera & Verify Face';
+    btn.textContent = ' Enable Camera & Verify Face';
     btn.disabled    = false;
   }
 }
@@ -706,7 +692,7 @@ async function runCameraFaceCheck(vid, checkBox) {
   const poll = async () => {
     if (attempts >= maxAttempts) {
       checkBox.className  = 'face-check-box bad';
-      checkBox.textContent = '❌ Could not detect exactly one face. Ensure you are alone, well-lit, and facing the camera.';
+      checkBox.textContent = 'Could not detect exactly one face. Ensure you are alone, well-lit, and facing the camera.';
       // Allow retry
       document.getElementById('startCamBtn').textContent = '🔄 Retry Face Check';
       document.getElementById('startCamBtn').disabled    = false;
@@ -724,9 +710,9 @@ async function runCameraFaceCheck(vid, checkBox) {
     const faces = await faceModel.estimateFaces(vid, false);
 
     if (faces.length === 1) {
-      statusEl.textContent = 'Camera active — face verified ✅';
+      statusEl.textContent = 'Camera active — face verified ';
       checkBox.className   = 'face-check-box ok';
-      checkBox.textContent = '✅ One face detected. You may start the assessment.';
+      checkBox.textContent = 'One face detected. You may start the assessment.';
       document.getElementById('startCamBtn').style.display = 'none';
       startBtn.style.display = 'block';
     } else if (faces.length === 0) {
@@ -762,13 +748,13 @@ async function startFaceProctoring() {
       if (count === 1) {
         // ✅ All good
         statusEl.className   = 'pip-face-status ok';
-        statusEl.textContent = '✅ 1 face detected';
+        statusEl.textContent = ' 1 face detected';
         hideFaceAlert();
 
       } else if (count === 0) {
         // No face — show alert, count violation after 5s continuous absence
         statusEl.className   = 'pip-face-status bad';
-        statusEl.textContent = '❌ No face detected!';
+        statusEl.textContent = 'No face detected!';
         showFaceAlert('no-face', '⚠️ No face detected — please stay in front of the camera!');
         scheduleFaceViolation('no-face');
 
@@ -801,7 +787,7 @@ function scheduleFaceViolation(type) {
     faceViolationPending = false;
     // After 3 face violations auto-submit
     if (faceViolations >= 3) {
-      showFaceAlert('no-face', '🚨 Too many face violations. Test is being submitted.');
+      showFaceAlert('no-face', ' Too many face violations. Test is being submitted.');
       setTimeout(() => submitExam(true), 3000);
     }
   }, 5000); // 5-second grace period before counting a violation
@@ -1024,7 +1010,7 @@ async function sendEmailNotifications(record) {
     usn:             record.usn,
     college:         record.college,
     score:           `${record.score}/30`,
-    status:          record.shortlisted ? 'SHORTLISTED ✅' : 'Not Shortlisted ❌',
+    status:          record.shortlisted ? 'SHORTLISTED ' : 'Not Shortlisted ',
     mysql:           `${record.sectionScores.MySQL}/10`,
     oop:             `${record.sectionScores.OOP}/10`,
     linux:           `${record.sectionScores.Linux}/10`,
@@ -1051,7 +1037,7 @@ function showResults(r) {
   circleEl.style.borderColor = r.shortlisted ? 'var(--accent)' : 'var(--red)';
   scoreEl.style.color        = r.shortlisted ? '#0f9c7b'       : 'var(--red)';
 
-  verdictEl.textContent = r.shortlisted ? '🎉 Congratulations! You are Shortlisted.' : '😔 Not Shortlisted';
+  verdictEl.textContent = r.shortlisted ? '🎉 Congratulations! You are Shortlisted.' : 'Not Shortlisted';
   verdictEl.className   = 'result-verdict ' + (r.shortlisted ? 'shortlisted' : 'not-shortlisted');
 
   document.getElementById('resultMsg').textContent = r.shortlisted
@@ -1075,7 +1061,7 @@ function showResults(r) {
 /* ══ ADMIN PANEL ══ */
 function openAdmin() {
   const pass = prompt('Admin password:');
-  if (pass !== 'stepahead2025') { alert('Incorrect password.'); return; }
+  if (pass !== 'Re$ult@M!t') { alert('Incorrect password.'); return; }
   renderAdminTable();
   document.getElementById('adminOverlay').classList.add('open');
 }
