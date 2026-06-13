@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StepAhead — Technical Writer Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- SheetJS for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- TensorFlow.js + BlazeFace for live face detection proctoring -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.min.js"></script>
+<style>
+:root {
+  --blue: #0f4c91; --mid: #1a6fd4; --light: #3b8df0; --accent: #00c9a7;
+  --gold: #f59e0b; --red: #ef4444; --bg: #f8faff; --surface: #ffffff;
+  --s2: #f0f4ff; --text: #111827; --mid-t: #374151; --muted: #6b7280; --border: #e5e9f5;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text);
+  line-height: 1.6; overflow-x: hidden; user-select: none;
+}
+img { user-select: none; pointer-events: none; }
+
+/* ── SCREENS ── */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+#examScreen { display: none; min-height: 100vh; flex-direction: column; }
+#examScreen.active { display: flex; }
+#resultsScreen { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding: 32px 24px; }
+#resultsScreen.active { display: flex; }
+
+/* ── HEADER ── */
+.site-header {
+  background: linear-gradient(135deg, #0a1628, var(--blue));
+  padding: 16px 32px; display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.site-header .logo-text { font-family: 'Syne', sans-serif; color: #fff; font-size: 1.1rem; font-weight: 800; }
+.site-header .logo-sub { font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-left: auto; }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface); border-radius: 24px; padding: 48px;
+  box-shadow: 0 16px 60px rgba(15,76,145,0.12); max-width: 600px; width: 100%;
+}
+.card-sm { max-width: 480px; }
+
+/* ── TYPOGRAPHY ── */
+.page-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.page-sub { color: var(--muted); font-size: 0.93rem; margin-bottom: 28px; line-height: 1.7; }
+.label { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 6px; display: block; }
+.badge { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.badge-blue { background: rgba(15,76,145,0.1); color: var(--blue); }
+.badge-green { background: rgba(0,201,167,0.12); color: #0f9c7b; }
+.badge-red { background: rgba(239,68,68,0.1); color: var(--red); }
+.badge-gold { background: rgba(245,158,11,0.12); color: #b45309; }
+.badge-purple { background: rgba(124,58,237,0.1); color: #7c3aed; }
+
+/* ── FORM ELEMENTS ── */
+.form-group { margin-bottom: 16px; }
+input[type="text"], input[type="email"], input[type="tel"], input[type="number"] {
+  width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+  border-radius: 10px; font-size: 0.9rem; font-family: inherit;
+  color: var(--text); background: var(--bg); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus { border-color: var(--mid); box-shadow: 0 0 0 3px rgba(26,111,212,0.12); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+textarea.write-area {
+  width: 100%; min-height: 220px; padding: 16px; border: 1.5px solid var(--border);
+  border-radius: 12px; font-size: 0.95rem; font-family: inherit; color: var(--text);
+  background: var(--surface); outline: none; resize: vertical; line-height: 1.6;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+textarea.write-area:focus { border-color: var(--mid); box-shadow: 0 0 0 3px rgba(26,111,212,0.12); }
+.write-meta { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-top: 8px; margin-bottom: 24px; }
+.situation-box {
+  background: var(--s2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px 18px; margin-bottom: 18px; font-size: 0.92rem; color: var(--mid-t); line-height: 1.65;
+}
+.situation-box strong { color: var(--blue); }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 13px 28px; border-radius: 12px; font-size: 0.95rem;
+  font-weight: 700; font-family: inherit; border: none; cursor: pointer; transition: all 0.25s;
+}
+.btn-primary { background: linear-gradient(135deg, var(--blue), var(--mid)); color: #fff; box-shadow: 0 6px 24px rgba(15,76,145,0.3); width: 100%; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(15,76,145,0.4); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn-cam { background: linear-gradient(135deg, #0f9c7b, var(--accent)); color: #fff; box-shadow: 0 6px 24px rgba(0,201,167,0.3); width: 100%; }
+.btn-cam:hover { transform: translateY(-2px); }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--mid-t); padding: 10px 20px; }
+.btn-outline:hover { border-color: var(--mid); color: var(--blue); }
+
+/* ── VIDEO ── */
+#videoPreview {
+  width: 100%; border-radius: 14px; background: #0a1628;
+  aspect-ratio: 16/9; object-fit: cover; margin-bottom: 16px;
+  display: none; border: 2px solid var(--border);
+}
+#videoPreview.live { display: block; border-color: var(--accent); }
+.cam-status { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 16px; }
+.cam-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
+.cam-dot.on { background: var(--accent); animation: blink 1.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── RULES LIST ── */
+.rules-list { list-style: none; margin: 16px 0; display: flex; flex-direction: column; gap: 10px; }
+.rules-list li {
+  display: flex; gap: 10px; font-size: 0.88rem; color: var(--mid-t);
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px; align-items: flex-start;
+}
+.rules-list li .ri { min-width: 18px; }
+
+/* ── EXAM LAYOUT ── */
+.exam-top {
+  background: linear-gradient(135deg, #0a1628, var(--blue));
+  padding: 14px 28px; display: flex; align-items: center;
+  justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  position: sticky; top: 0; z-index: 50;
+}
+.exam-top-left { display: flex; align-items: center; gap: 14px; }
+.exam-info { color: rgba(255,255,255,0.8); font-size: 0.85rem; }
+.exam-info strong { color: #fff; }
+.timer-wrap { display: flex; align-items: center; gap: 8px; }
+.timer-box {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px; padding: 8px 16px;
+  font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800;
+  color: #fff; min-width: 90px; text-align: center; letter-spacing: 0.05em;
+}
+.timer-box.urgent { background: rgba(239,68,68,0.25); border-color: rgba(239,68,68,0.5); color: #fca5a5; animation: timerPulse 0.8s infinite; }
+@keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+.progress-bar-wrap { height: 3px; background: rgba(255,255,255,0.1); }
+.progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--light)); transition: width 0.5s; }
+
+/* ── QUESTION PANEL ── */
+.exam-body { flex: 1; display: grid; grid-template-columns: 260px 1fr; overflow: hidden; }
+.question-nav { background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 20px; }
+.qnav-title { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+.qnav-section { margin-bottom: 18px; }
+.qnav-section-title { font-size: 0.75rem; font-weight: 700; color: var(--blue); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+.qnav-dots { display: flex; flex-wrap: wrap; gap: 6px; }
+.qnav-dot {
+  width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s;
+  background: var(--bg); color: var(--text);
+}
+.qnav-dot:hover { border-color: var(--mid); }
+.qnav-dot.answered { background: var(--accent); border-color: var(--accent); color: #fff; }
+.qnav-dot.current { background: var(--blue); border-color: var(--blue); color: #fff; }
+.qnav-legend { margin-top: 16px; display: flex; flex-direction: column; gap: 6px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--muted); }
+.legend-dot { width: 14px; height: 14px; border-radius: 4px; }
+
+/* Video pip */
+.video-pip { position: fixed; bottom: 20px; right: 20px; z-index: 200; width: 160px; border-radius: 12px; overflow: hidden; border: 2px solid var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,0.3); display: none; }
+.video-pip video { width: 100%; display: block; }
+.video-pip-label { background: rgba(0,0,0,0.7); color: var(--accent); font-size: 0.68rem; font-weight: 700; text-align: center; padding: 4px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+/* Question area */
+.question-area { overflow-y: auto; padding: 36px 40px; background: var(--bg); }
+.q-section-badge { margin-bottom: 10px; }
+.q-number { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
+.q-text { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 24px; line-height: 1.55; }
+.options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.option {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: 12px; padding: 14px 18px; cursor: pointer;
+  transition: all 0.2s; font-size: 0.93rem; color: var(--text);
+}
+.option:hover { border-color: var(--mid); background: var(--s2); }
+.option.selected { border-color: var(--blue); background: rgba(15,76,145,0.07); }
+.option.selected .opt-radio { border-color: var(--blue); background: var(--blue); }
+.opt-radio { min-width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); background: var(--bg); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.opt-radio::after { content: ''; display: none; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+.option.selected .opt-radio::after { display: block; }
+.q-nav-btns { display: flex; gap: 12px; align-items: center; }
+.btn-nav { padding: 11px 24px; border-radius: 10px; font-size: 0.88rem; font-weight: 700; font-family: inherit; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); transition: all 0.2s; }
+.btn-nav:hover { border-color: var(--mid); color: var(--blue); }
+.btn-nav.primary { background: linear-gradient(135deg, var(--blue), var(--mid)); color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(15,76,145,0.25); }
+.btn-nav.primary:hover { transform: translateY(-1px); }
+.btn-submit-exam { margin-left: auto; background: linear-gradient(135deg, #0f9c7b, var(--accent)); color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(0,201,167,0.3); }
+.btn-submit-exam:hover { transform: translateY(-1px); }
+
+/* ── WARNING OVERLAY ── */
+.warn-overlay { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(239,68,68,0.95); backdrop-filter: blur(8px); align-items: center; justify-content: center; flex-direction: column; gap: 16px; text-align: center; padding: 32px; }
+.warn-overlay.show { display: flex; }
+.warn-overlay h2 { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: #fff; }
+.warn-overlay p { color: rgba(255,255,255,0.9); font-size: 1rem; max-width: 420px; }
+.warn-count { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; color: #fff; }
+
+/* ── RESULTS ── */
+.results-header { text-align: center; margin-bottom: 12px; width: 100%; max-width: 700px; }
+.result-icon { font-size: 4rem; margin-bottom: 12px; }
+.result-verdict { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 10px; color: var(--blue); }
+
+/* ── ADMIN PANEL ── */
+#adminBtn { position: fixed; bottom: 16px; left: 16px; z-index: 500; background: rgba(15,76,145,0.9); color: #fff; border: none; border-radius: 10px; padding: 8px 14px; font-size: 0.75rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+.admin-overlay { display: none; position: fixed; inset: 0; z-index: 600; background: rgba(10,22,40,0.55); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 24px; }
+.admin-overlay.open { display: flex; }
+.admin-box { background: var(--surface); border-radius: 20px; padding: 36px; max-width: 1100px; width: 100%; max-height: 85vh; overflow-y: auto; }
+.admin-box h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 20px; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.admin-table th { background: var(--s2); padding: 10px 12px; text-align: left; font-weight: 700; color: var(--blue); border-bottom: 1px solid var(--border); white-space: nowrap; }
+.admin-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--mid-t); }
+.admin-table tr:last-child td { border-bottom: none; }
+.detail-btn { padding: 6px 12px; font-size: 0.75rem; border-radius: 8px; border: 1.5px solid var(--border); background: var(--bg); color: var(--blue); font-weight: 700; cursor: pointer; }
+.detail-btn:hover { border-color: var(--mid); }
+
+/* ── DETAIL OVERLAY ── */
+.detail-overlay { display: none; position: fixed; inset: 0; z-index: 700; background: rgba(10,22,40,0.65); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 24px; }
+.detail-overlay.open { display: flex; }
+.detail-box { background: var(--surface); border-radius: 20px; padding: 32px; max-width: 800px; width: 100%; max-height: 88vh; overflow-y: auto; }
+.detail-box h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+.dq-block { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; background: var(--s2); }
+.dq-block .dq-q { font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; }
+.dq-block .dq-ans { font-size: 0.85rem; padding: 4px 0; }
+.dq-correct { color: #0f9c7b; font-weight: 700; }
+.dq-wrong { color: var(--red); font-weight: 700; }
+.dq-written-ans { font-size: 0.88rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; white-space: pre-wrap; margin-top: 6px; }
+
+/* ── FACE DETECTION ── */
+.face-alert { display: none; position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 8000; color: #fff; padding: 12px 28px; border-radius: 14px; font-weight: 700; font-size: 0.9rem; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.35); white-space: nowrap; animation: faceAlertPop 0.3s ease; pointer-events: none; }
+.face-alert.show { display: block; }
+.face-alert.no-face { background: #ef4444; }
+.face-alert.multi { background: #f59e0b; color: #1c1c1c; }
+@keyframes faceAlertPop { from{opacity:0;transform:translateX(-50%) scale(0.88)} to{opacity:1;transform:translateX(-50%) scale(1)} }
+.pip-face-status { background: rgba(0,0,0,0.8); color: #fff; font-size: 0.68rem; font-weight: 700; padding: 4px 8px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+.pip-face-status.ok { color: var(--accent); }
+.pip-face-status.warn { color: #fbbf24; }
+.pip-face-status.bad { color: #f87171; }
+.face-check-box { margin-top: 14px; padding: 11px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; text-align: center; display: none; }
+.face-check-box.ok { background:rgba(0,201,167,0.1);color:#0f9c7b;border:1px solid rgba(0,201,167,0.3);display:block; }
+.face-check-box.warn { background:rgba(245,158,11,0.1);color:#b45309;border:1px solid rgba(245,158,11,0.3);display:block; }
+.face-check-box.bad { background:rgba(239,68,68,0.1); color:#ef4444;border:1px solid rgba(239,68,68,0.3); display:block; }
+
+@media (max-width: 768px) {
+  .exam-body { grid-template-columns: 1fr; }
+  .question-nav { display: none; }
+  .card { padding: 28px 20px; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ ALREADY COMPLETED SCREEN ═══════ -->
+<div class="screen" id="doneScreen">
+  <div class="site-header" style="position:fixed;top:0;left:0;right:0;z-index:100;">
+    <span class="logo-text">StepAhead Excellence</span>
+    <span class="logo-sub">Technical Writer Assessment</span>
+  </div>
+  <div class="card" style="margin-top:80px;text-align:center;">
+    <div style="font-size:3.2rem;margin-bottom:16px;">✅</div>
+    <h1 class="page-title">You've Already Completed This Assessment</h1>
+    <p class="page-sub">Our records show this device/browser has already been used to submit the Technical Writer assessment. Only one attempt is allowed per candidate. Our team will get in touch with you regarding the next steps.</p>
+  </div>
+</div>
+
+<!-- ═══════ SCREEN 1: REGISTRATION ═══════ -->
+<div class="screen active" id="regScreen">
+  <div class="site-header" style="position:fixed;top:0;left:0;right:0;z-index:100;">
+    <span class="logo-text">StepAhead Excellence</span>
+    <span class="logo-sub">Technical Writer Assessment</span>
+  </div>
+  <div class="card" style="margin-top:80px;">
+    <div class="badge badge-purple" style="margin-bottom:14px;">✍️ Technical Writer — Interview Assessment</div>
+    <h1 class="page-title">Assessment Registration</h1>
+    <p class="page-sub">Fill in your details to begin the Technical Writer assessment. Ensure your webcam is ready before starting.</p>
+    <ul class="rules-list">
+      <li><span class="ri">🎥</span> <span>Your <strong>webcam must be active</strong> throughout the test. The assessment will not start without camera access.</span></li>
+      <li><span class="ri">🔁</span> <span>Switching tabs or minimizing the window will trigger a <strong>warning</strong>. 2 violations = auto-submission.</span></li>
+      <li><span class="ri">🔒</span> <span>Questions are <strong>protected</strong>. Copying or right-clicking is disabled.</span></li>
+      <li><span class="ri">⏱️</span> <span><strong>60 minutes</strong> to complete <strong>25 questions</strong> — 5 written response questions (situational writing & grammar) and 20 multiple-choice questions (technical concepts).</span></li>
+      <li><span class="ri">🚫</span> <span>You get <strong>only one attempt</strong>. Once submitted, you cannot retake this assessment.</span></li>
+      <li><span class="ri">📊</span> <span>Results are reviewed by our team only. You will not see your score or correct answers, and no email is sent after submission.</span></li>
+    </ul>
+    <form id="regForm" onsubmit="proceedToCamera(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="label" for="s_name">Full Name *</label>
+          <input type="text" id="s_name" placeholder="Your full name" required />
+        </div>
+        <div class="form-group">
+          <label class="label" for="s_email">Email Address *</label>
+          <input type="email" id="s_email" placeholder="yourname@gmail.com" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="label" for="s_phone">Phone Number *</label>
+          <input type="tel" id="s_phone" placeholder="+91 00000 00000" required />
+        </div>
+        <div class="form-group">
+          <label class="label" for="s_exp">Experience (Years) *</label>
+          <input type="text" id="s_exp" placeholder="e.g. 0-1, 2, Fresher" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="label" for="s_org">Current Organization / College *</label>
+        <input type="text" id="s_org" placeholder="Your organization or college name" required />
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top:8px;">Continue to Camera Setup →</button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════ SCREEN 2: CAMERA SETUP ═══════ -->
+<div class="screen" id="camScreen">
+  <div class="card card-sm">
+    <div class="badge badge-green" style="margin-bottom:14px;">Camera & Face Verification</div>
+    <h1 class="page-title" style="font-size:1.5rem;">Enable Your Webcam</h1>
+    <p class="page-sub" style="margin-bottom:20px;">
+      Your camera must be active and <strong>only your face</strong> must be visible throughout the test.
+      Multiple faces or no face detected will trigger a warning.
+    </p>
+    <video id="videoPreview" autoplay muted playsinline></video>
+    <div class="cam-status" id="camStatus">
+      <div class="cam-dot" id="camDot"></div>
+      <span id="camStatusText">Camera not started</span>
+    </div>
+    <div class="face-check-box" id="faceCheckBox"></div>
+    <button class="btn btn-cam" id="startCamBtn" onclick="startCamera()">📷 Enable Camera & Verify Face</button>
+    <button class="btn btn-primary" id="startExamBtn" style="margin-top:12px; display:none;" onclick="startExam()">
+      Start Assessment →
+    </button>
+    <p style="font-size:0.78rem;color:var(--muted);text-align:center;margin-top:12px;">
+      Your video is used only for proctoring. No recording is stored.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════ SCREEN 3: EXAM ═══════ -->
+<div id="examScreen">
+  <div class="exam-top">
+    <div class="exam-top-left">
+      <span style="font-family:'Syne',sans-serif;font-weight:800;color:#fff;font-size:1rem;">StepAhead Assessment</span>
+      <span class="exam-info" id="examStudentName"></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span class="exam-info">Q <strong id="qCounter">1</strong>/25</span>
+      <div class="timer-wrap">
+        <span style="color:rgba(255,255,255,0.6);font-size:0.8rem;">Time Left</span>
+        <div class="timer-box" id="timerDisplay">60:00</div>
+      </div>
+    </div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+  <div class="exam-body">
+    <!-- Question Navigator -->
+    <div class="question-nav">
+      <div class="qnav-title">Navigation</div>
+      <div class="qnav-section">
+        <div class="qnav-section-title">✍️ Writing Tasks</div>
+        <div class="qnav-dots" id="navWriting"></div>
+      </div>
+      <div class="qnav-section">
+        <div class="qnav-section-title">Grammar & Style</div>
+        <div class="qnav-dots" id="navGrammar"></div>
+      </div>
+      <div class="qnav-section">
+        <div class="qnav-section-title">Documentation Concepts</div>
+        <div class="qnav-dots" id="navDocs"></div>
+      </div>
+      <div class="qnav-section">
+        <div class="qnav-section-title">Tools & Formats</div>
+        <div class="qnav-dots" id="navTools"></div>
+      </div>
+      <div class="qnav-section">
+        <div class="qnav-section-title">Technical Concepts</div>
+        <div class="qnav-dots" id="navTech"></div>
+      </div>
+      <div class="qnav-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--bg);border:1.5px solid var(--border)"></div>Not answered</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Answered</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Current</div>
+      </div>
+    </div>
+    <!-- Question Panel -->
+    <div class="question-area" id="questionArea">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ RESULTS SCREEN ═══════ -->
+<div id="resultsScreen">
+  <div class="results-header">
+    <div class="result-icon">📨</div>
+    <div class="result-verdict">Assessment Submitted Successfully</div>
+    <p style="color:var(--muted);font-size:0.95rem;max-width:520px;margin:0 auto;line-height:1.8;">
+      Thank you for completing the StepAhead Technical Writer assessment. Your responses have been recorded.
+      Our team will review your submission and reach out to you regarding the next steps. Scores and answers
+      are not shared as part of this assessment.
+    </p>
+  </div>
+</div>
+
+<!-- Video PIP during exam -->
+<div class="video-pip" id="videoPIP">
+  <video id="pipVideo" autoplay muted playsinline></video>
+  <div class="pip-face-status ok" id="pipFaceStatus">1 face detected</div>
+</div>
+
+<!-- Face alert banner (shown during exam) -->
+<div class="face-alert" id="faceAlert"></div>
+
+<!-- Tab-switch warning overlay -->
+<div class="warn-overlay" id="warnOverlay">
+  <div style="font-size:4rem;">⚠️</div>
+  <h2>Tab Switch Detected!</h2>
+  <p id="warnMsg">Switching tabs is not allowed during the assessment.</p>
+  <div class="warn-count" id="warnCountDisplay">Warning 1/2</div>
+  <p style="font-size:0.85rem;">Return to the assessment immediately. A second violation will auto-submit your test.</p>
+  <button class="btn" style="background:#fff;color:#ef4444;font-weight:800;margin-top:8px;" onclick="dismissWarning()">I Understand — Return to Test</button>
+</div>
+
+<!-- Admin button + panel -->
+<button id="adminBtn" onclick="openAdmin()">Admin</button>
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+      <h2>All Submissions</h2>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline" style="padding:8px 16px;font-size:0.82rem;" onclick="exportToExcel()">📥 Export to Excel</button>
+        <button class="btn btn-outline" style="padding:8px 16px;font-size:0.82rem;" onclick="closeAdmin()">✕ Close</button>
+      </div>
+    </div>
+    <div id="adminContent"><p style="color:var(--muted);font-size:0.88rem;">No submissions yet.</p></div>
+  </div>
+</div>
+
+<!-- Candidate detail overlay (admin only) -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 id="detailTitle">Candidate Detail</h2>
+      <button class="btn btn-outline" style="padding:8px 16px;font-size:0.82rem;" onclick="closeDetail()">✕ Close</button>
+    </div>
+    <div id="detailContent" style="margin-top:14px;"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   WRITTEN RESPONSE QUESTIONS (5) — checks grammar & understanding
+   ════════════════════════════════════════════════════════ */
+const WRITTEN_QUESTIONS = [
+  {
+    q: "A colleague has written this sentence in a help article: \"The user should ensures their password meets the requirement before they submits the form.\" Rewrite the sentence correctly, and briefly explain (1–2 lines) what grammatical errors you fixed."
+  },
+  {
+    q: "Explain the difference between \"affect\" and \"effect\", using one example sentence for each."
+  },
+  {
+    q: "Your team just released a \"Dark Mode\" feature for a mobile app. Write a short release note (3–5 sentences) for end users describing what changed and how to turn it on."
+  },
+  {
+    q: "A user reports the following issue in plain language: \"when i click on save button nothing happen and the page just freeze.\" Rewrite this as a clear, professional bug report description, including what the user did, what they expected, and what actually happened."
+  },
+  {
+    q: "Explain, in 3–4 simple sentences a non-technical reader would understand, what an API is and why it is useful."
+  }
+];
+
+/* ════════════════════════════════════════════════════════
+   MCQ QUESTION BANK — 20 questions, 4 categories × 5 each
+   ════════════════════════════════════════════════════════ */
+const MCQ_BANK = {
+  Grammar: [
+    { q: "Which sentence is grammatically correct?", opts: ["The team has completed there tasks on time.","The team has completed their tasks on time.","The team have completed they're tasks on time.","The team has completed it's tasks on time."], ans: 1 },
+    { q: "Which of these sentences is written in the passive voice?", opts: ["The developer fixed the bug.","The bug was fixed by the developer.","The developer will fix the bug.","The developer is fixing the bug."], ans: 1 },
+    { q: "Choose the correct usage: '___' is used to give a specific example, while '___' means \"that is\" and is used to clarify a statement.", opts: ["e.g. ; i.e.","i.e. ; e.g.","etc. ; e.g.","viz. ; etc."], ans: 0 },
+    { q: "Which punctuation mark is best used to introduce a list or an explanation?", opts: ["Semicolon ( ; )","Colon ( : )","Hyphen ( - )","Ellipsis ( ... )"], ans: 1 },
+    { q: "In technical writing, which tense and mood are generally preferred for step-by-step instructions?", opts: ["Past tense","Future tense","Present tense, imperative mood","Past perfect tense"], ans: 2 },
+  ],
+  Docs: [
+    { q: "What is the main purpose of a README file in a software project?", opts: ["To store the application's source code","To give an overview of the project, setup steps, and usage instructions","To list every bug ever reported","To run automated tests"], ans: 1 },
+    { q: "What does \"single-sourcing\" mean in technical documentation?", opts: ["Writing content once and reusing it across multiple outputs or formats","Using only one author for all documents","Storing documents in a single file format only","Translating documents into a single language"], ans: 0 },
+    { q: "Which document type walks a user through completing a task step by step?", opts: ["Release notes","API reference","Tutorial / how-to guide","Style guide"], ans: 2 },
+    { q: "What is the primary purpose of a style guide?", opts: ["To list a product's features","To ensure consistency in tone, terminology, and formatting across documents","To track project deadlines","To store source code comments"], ans: 1 },
+    { q: "What information do release notes typically include?", opts: ["Internal team meeting minutes","New features, fixes, and changes included in a software release","Marketing budget details","Employee performance reviews"], ans: 1 },
+  ],
+  Tools: [
+    { q: "Markdown is primarily used for?", opts: ["Compiling source code","Formatting text using simple syntax for documentation and web content","Encrypting files","Managing databases"], ans: 1 },
+    { q: "Which format is commonly used to describe and document REST APIs?", opts: ["OpenAPI / Swagger","MP3","CSV","JPEG"], ans: 0 },
+    { q: "Git is primarily used for?", opts: ["Image editing","Version control of source code and files","Sending emails","Creating spreadsheets"], ans: 1 },
+    { q: "Which of these tools is commonly used for collaborative team documentation (wikis)?", opts: ["Confluence","Photoshop","AutoCAD","Excel"], ans: 0 },
+    { q: "Version control systems primarily help teams manage?", opts: ["Office supplies","Changes to files and code over time, with history and collaboration","Employee attendance","Network bandwidth"], ans: 1 },
+  ],
+  Tech: [
+    { q: "What does API stand for?", opts: ["Application Programming Interface","Automated Process Integration","Advanced Program Index","Application Process Identifier"], ans: 0 },
+    { q: "JSON is commonly used for?", opts: ["Playing audio files","Structuring and exchanging data between systems","Compiling programs","Encrypting passwords"], ans: 1 },
+    { q: "An HTTP 404 status code means?", opts: ["Server error","Request successful","Resource not found","Unauthorized access"], ans: 2 },
+    { q: "Which best describes the difference between front-end and back-end?", opts: ["Front-end is the user interface; back-end is the server, database, and application logic","Front-end is the database; back-end is the visual design","There is no real difference","Front-end runs only on servers"], ans: 0 },
+    { q: "UI/UX commonly stands for?", opts: ["User Interface / User Experience","Universal Interface / Universal Exchange","User Input / User Export","Unified Interface / Unified Experience"], ans: 0 },
+  ]
+};
+
+const CAT_LABELS = { Grammar: 'Grammar & Style', Docs: 'Documentation Concepts', Tools: 'Tools & Formats', Tech: 'Technical Concepts' };
+const TOTAL_QUESTIONS = 25;
+const TOTAL_MCQ = 20;
+const EXAM_SECONDS = 60 * 60; // 60 minutes
+
+/* ════════════════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════════════════ */
+let student = {};
+let questions = [];
+let answers = {};       // index -> selected option index (mcq) or text (written)
+let currentQ = 0;
+let timerInterval = null;
+let timeLeft = EXAM_SECONDS;
+let stream = null;
+let tabViolations = 0;
+let faceViolations = 0;
+let examActive = false;
+let faceModel = null;
+let faceLoopActive = false;
+let faceAlertTimer = null;
+let startTime = null;
+let endTime = null;
+
+let submissions = [];
+try { submissions = JSON.parse(localStorage.getItem('sa_tw_submissions') || '[]'); } catch(e) { submissions = []; }
+
+/* ══ ANTI-COPY / ANTI-CHEAT ══ */
+document.addEventListener('contextmenu', e => { if (examActive) e.preventDefault(); });
+document.addEventListener('copy', e => { if (examActive) e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (!examActive) return;
+  if (e.ctrlKey && ['c','a','u','s','p','v'].includes(e.key.toLowerCase())) e.preventDefault();
+  if (['F12','F5'].includes(e.key)) e.preventDefault();
+});
+document.addEventListener('visibilitychange', () => { if (examActive && document.hidden) triggerTabWarning(); });
+window.addEventListener('blur', () => { if (examActive) triggerTabWarning(); });
+
+/* ══ ONE-ATTEMPT CHECK ══ */
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('sa_tw_completed') === 'true') {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('doneScreen').classList.add('active');
+  }
+});
+
+/* ══ REGISTRATION ══ */
+function proceedToCamera(e) {
+  e.preventDefault();
+  student = {
+    name: document.getElementById('s_name').value.trim(),
+    email: document.getElementById('s_email').value.trim(),
+    phone: document.getElementById('s_phone').value.trim(),
+    experience: document.getElementById('s_exp').value.trim(),
+    org: document.getElementById('s_org').value.trim(),
+  };
+  switchScreen('camScreen');
+}
+
+/* ══ CAMERA + FACE VERIFICATION ══ */
+async function startCamera() {
+  const btn = document.getElementById('startCamBtn');
+  const statusEl = document.getElementById('camStatusText');
+  const checkBox = document.getElementById('faceCheckBox');
+  btn.textContent = 'Starting camera...';
+  btn.disabled = true;
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
+    const vid = document.getElementById('videoPreview');
+    vid.srcObject = stream;
+    vid.classList.add('live');
+    document.getElementById('camDot').classList.add('on');
+    statusEl.textContent = 'Camera active — loading face detection...';
+
+    checkBox.className = 'face-check-box warn';
+    checkBox.textContent = 'Loading face detection model...';
+    faceModel = await blazeface.load();
+
+    await runCameraFaceCheck(vid, checkBox);
+  } catch (err) {
+    alert('⚠️ Camera access denied or unavailable. You must enable your camera to take the test.');
+    btn.textContent = '📷 Enable Camera & Verify Face';
+    btn.disabled = false;
+  }
+}
+
+async function runCameraFaceCheck(vid, checkBox) {
+  const statusEl = document.getElementById('camStatusText');
+  const startBtn = document.getElementById('startExamBtn');
+
+  let attempts = 0;
+  const maxAttempts = 8;
+
+  const poll = async () => {
+    if (attempts >= maxAttempts) {
+      checkBox.className = 'face-check-box bad';
+      checkBox.textContent = 'Could not detect exactly one face. Ensure you are alone, well-lit, and facing the camera.';
+      document.getElementById('startCamBtn').textContent = '🔄 Retry Face Check';
+      document.getElementById('startCamBtn').disabled = false;
+      document.getElementById('startCamBtn').onclick = async () => {
+        document.getElementById('startCamBtn').disabled = true;
+        attempts = 0;
+        checkBox.className = 'face-check-box warn';
+        checkBox.textContent = '⏳ Re-checking...';
+        await runCameraFaceCheck(vid, checkBox);
+      };
+      return;
+    }
+    attempts++;
+    const faces = await faceModel.estimateFaces(vid, false);
+    if (faces.length === 1) {
+      statusEl.textContent = 'Camera active — face verified ✓';
+      checkBox.className = 'face-check-box ok';
+      checkBox.textContent = '✅ One face detected. You may start the assessment.';
+      document.getElementById('startCamBtn').style.display = 'none';
+      startBtn.style.display = 'block';
+    } else if (faces.length === 0) {
+      checkBox.className = 'face-check-box bad';
+      checkBox.textContent = `⚠️ No face detected (attempt ${attempts}/${maxAttempts}). Please sit in front of your camera in a well-lit area.`;
+      setTimeout(poll, 900);
+    } else {
+      checkBox.className = 'face-check-box bad';
+      checkBox.textContent = `⚠️ Multiple faces detected (attempt ${attempts}/${maxAttempts}). Only you should be in frame.`;
+      setTimeout(poll, 900);
+    }
+  };
+  await poll();
+}
+
+/* ══ LIVE FACE PROCTORING DURING EXAM ══ */
+async function startFaceProctoring() {
+  if (!faceModel) return;
+  faceLoopActive = true;
+  const pipVid = document.getElementById('pipVideo');
+  const statusEl = document.getElementById('pipFaceStatus');
+
+  const loop = async () => {
+    if (!faceLoopActive || !examActive) return;
+    try {
+      const faces = await faceModel.estimateFaces(pipVid, false);
+      const count = faces.length;
+      if (count === 1) {
+        statusEl.className = 'pip-face-status ok';
+        statusEl.textContent = '✓ 1 face detected';
+        hideFaceAlert();
+      } else if (count === 0) {
+        statusEl.className = 'pip-face-status bad';
+        statusEl.textContent = '⚠️ No face detected!';
+        showFaceAlert('no-face', '⚠️ No face detected — please stay in front of the camera!');
+        scheduleFaceViolation('no-face');
+      } else {
+        statusEl.className = 'pip-face-status warn';
+        statusEl.textContent = `⚠️ ${count} faces detected!`;
+        showFaceAlert('multi', `⚠️ ${count} faces detected — only you should be in frame!`);
+        scheduleFaceViolation('multi');
+      }
+    } catch(e) { /* silently continue */ }
+    if (faceLoopActive && examActive) setTimeout(loop, 1500);
+  };
+  loop();
+}
+
+let faceViolationPending = false;
+let faceViolationTimeout = null;
+function scheduleFaceViolation(type) {
+  if (faceViolationPending) return;
+  faceViolationPending = true;
+  faceViolationTimeout = setTimeout(() => {
+    faceViolations++;
+    faceViolationPending = false;
+    if (faceViolations >= 3) {
+      showFaceAlert('no-face', '⚠️ Too many face violations. Test is being submitted.');
+      setTimeout(() => submitExam(true), 3000);
+    }
+  }, 5000);
+}
+
+function showFaceAlert(type, msg) {
+  const el = document.getElementById('faceAlert');
+  el.textContent = msg;
+  el.className = `face-alert show ${type}`;
+  if (faceAlertTimer) clearTimeout(faceAlertTimer);
+}
+function hideFaceAlert() {
+  if (faceViolationPending) { clearTimeout(faceViolationTimeout); faceViolationPending = false; }
+  const el = document.getElementById('faceAlert');
+  el.className = 'face-alert';
+  if (faceAlertTimer) clearTimeout(faceAlertTimer);
+}
+function stopFaceProctoring() {
+  faceLoopActive = false;
+  if (faceViolationTimeout) clearTimeout(faceViolationTimeout);
+  hideFaceAlert();
+}
+
+/* ══ BUILD EXAM QUESTIONS ══ */
+function buildQuestions() {
+  const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
+
+  const written = WRITTEN_QUESTIONS.map((w, i) => ({ type: 'written', cat: 'Writing Tasks', q: w.q, num: i + 1 }));
+
+  const mcq = [];
+  Object.keys(MCQ_BANK).forEach(catKey => {
+    MCQ_BANK[catKey].forEach((q, i) => {
+      const tagged = q.opts.map((o, oi) => ({ text: o, correct: oi === q.ans }));
+      const shuffled = shuffle(tagged);
+      mcq.push({
+        type: 'mcq', cat: catKey, catLabel: CAT_LABELS[catKey],
+        q: q.q, opts: shuffled.map(o => o.text),
+        ans: shuffled.findIndex(o => o.correct), num: i + 1
+      });
+    });
+  });
+
+  questions = [...written, ...mcq];
+}
+
+/* ══ START EXAM ══ */
+function startExam() {
+  buildQuestions();
+  switchScreen(null, 'examScreen');
+
+  const pipVid = document.getElementById('pipVideo');
+  pipVid.srcObject = stream;
+  document.getElementById('videoPIP').style.display = 'block';
+
+  document.getElementById('examStudentName').innerHTML = `<strong>${student.name}</strong>`;
+
+  startTime = new Date();
+  buildNavDots();
+  renderQuestion(0);
+  startTimer();
+  examActive = true;
+
+  startFaceProctoring();
+  document.documentElement.requestFullscreen?.().catch(() => {});
+}
+
+/* ══ NAVIGATION DOTS ══ */
+function buildNavDots() {
+  const idMap = { 'Writing Tasks': 'navWriting', Grammar: 'navGrammar', Docs: 'navDocs', Tools: 'navTools', Tech: 'navTech' };
+  const cats = { 'Writing Tasks': [], Grammar: [], Docs: [], Tools: [], Tech: [] };
+  questions.forEach((q, i) => cats[q.cat].push(i));
+
+  Object.entries(cats).forEach(([cat, indices]) => {
+    const wrap = document.getElementById(idMap[cat]);
+    wrap.innerHTML = '';
+    indices.forEach((qi, local) => {
+      const dot = document.createElement('div');
+      dot.className = 'qnav-dot';
+      dot.id = `dot_${qi}`;
+      dot.textContent = local + 1;
+      dot.onclick = () => renderQuestion(qi);
+      wrap.appendChild(dot);
+    });
+  });
+}
+
+function isAnswered(idx) {
+  const q = questions[idx];
+  if (q.type === 'written') return typeof answers[idx] === 'string' && answers[idx].trim().length > 0;
+  return answers[idx] !== undefined;
+}
+
+function updateDots() {
+  questions.forEach((_, i) => {
+    const dot = document.getElementById(`dot_${i}`);
+    if (!dot) return;
+    dot.className = 'qnav-dot';
+    if (isAnswered(i)) dot.classList.add('answered');
+    if (i === currentQ) dot.classList.add('current');
+  });
+}
+
+/* ══ RENDER QUESTION ══ */
+function renderQuestion(idx) {
+  currentQ = idx;
+  const q = questions[idx];
+  const catColors = { 'Writing Tasks': 'badge-purple', Grammar: 'badge-blue', Docs: 'badge-gold', Tools: 'badge-green', Tech: 'badge-red' };
+  const catLabel = q.cat === 'Writing Tasks' ? 'Writing Task' : (q.catLabel || q.cat);
+
+  let answeredCount = 0;
+  for (let i = 0; i < questions.length; i++) if (isAnswered(i)) answeredCount++;
+
+  document.getElementById('qCounter').textContent = idx + 1;
+  document.getElementById('progressBar').style.width = ((answeredCount / TOTAL_QUESTIONS) * 100) + '%';
+
+  let bodyHtml = '';
+  if (q.type === 'written') {
+    const val = answers[idx] !== undefined ? answers[idx] : '';
+    bodyHtml = `
+      <div class="situation-box"><strong>Situation:</strong> ${q.q}</div>
+      <textarea class="write-area" id="writeArea" placeholder="Type your answer here..." oninput="onWriteInput(${idx}, this.value)">${escapeHtml(val)}</textarea>
+      <div class="write-meta"><span>Write a clear, well-structured response. Grammar and clarity matter.</span><span id="charCount">${val.length} characters</span></div>
+    `;
+  } else {
+    bodyHtml = `
+      <div class="options" id="optContainer">
+        ${q.opts.map((opt, oi) => `
+          <div class="option${answers[idx] === oi ? ' selected' : ''}" onclick="selectAnswer(${idx},${oi})">
+            <div class="opt-radio"></div>
+            <span>${opt}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="q-section-badge"><span class="badge ${catColors[q.cat] || 'badge-blue'}">${catLabel}</span></div>
+    <div class="q-number">Question ${idx + 1} of ${TOTAL_QUESTIONS}</div>
+    <div class="q-text">${idx + 1}. ${q.q.length > 0 && q.type === 'written' ? 'Read the situation below and write your response.' : q.q}</div>
+    ${bodyHtml}
+    <div class="q-nav-btns">
+      ${idx > 0 ? `<button class="btn-nav" onclick="renderQuestion(${idx-1})">← Previous</button>` : ''}
+      ${idx < TOTAL_QUESTIONS - 1 ? `<button class="btn-nav primary" onclick="renderQuestion(${idx+1})">Next →</button>` : ''}
+      <button class="btn-nav btn-submit-exam" onclick="confirmSubmit()">Submit Test ✓</button>
+    </div>
+  `;
+  updateDots();
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function selectAnswer(qIdx, optIdx) {
+  answers[qIdx] = optIdx;
+  renderQuestion(qIdx);
+}
+
+function onWriteInput(qIdx, value) {
+  answers[qIdx] = value;
+  const cc = document.getElementById('charCount');
+  if (cc) cc.textContent = `${value.length} characters`;
+  updateDots();
+  const answeredCount = questions.reduce((acc, _, i) => acc + (isAnswered(i) ? 1 : 0), 0);
+  document.getElementById('progressBar').style.width = ((answeredCount / TOTAL_QUESTIONS) * 100) + '%';
+}
+
+/* ══ TIMER ══ */
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+    const s = String(timeLeft % 60).padStart(2, '0');
+    const box = document.getElementById('timerDisplay');
+    box.textContent = `${m}:${s}`;
+    if (timeLeft <= 300) box.classList.add('urgent');
+    if (timeLeft <= 0) submitExam(true);
+  }, 1000);
+}
+
+/* ══ TAB SWITCH WARNING ══ */
+function triggerTabWarning() {
+  if (!examActive) return;
+  tabViolations++;
+  document.getElementById('warnCountDisplay').textContent = `Warning ${tabViolations}/2`;
+  document.getElementById('warnMsg').textContent =
+    tabViolations >= 2
+      ? 'You have exceeded the allowed tab switches. Your test will be submitted now.'
+      : 'Switching tabs is not allowed during the assessment.';
+  document.getElementById('warnOverlay').classList.add('show');
+  if (tabViolations >= 2) setTimeout(() => submitExam(true), 2500);
+}
+function dismissWarning() {
+  document.getElementById('warnOverlay').classList.remove('show');
+  window.focus();
+}
+
+/* ══ SUBMIT ══ */
+function confirmSubmit() {
+  const answeredCount = questions.reduce((acc, _, i) => acc + (isAnswered(i) ? 1 : 0), 0);
+  const unanswered = TOTAL_QUESTIONS - answeredCount;
+  if (unanswered > 0 && !confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) return;
+  submitExam(false);
+}
+
+function formatDateTime(d) {
+  return d.toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+}
+function formatDuration(ms) {
+  const totalSec = Math.round(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${m}m ${s}s`;
+}
+
+function submitExam(forced) {
+  if (!examActive) return;
+  examActive = false;
+  clearInterval(timerInterval);
+  stopFaceProctoring();
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  document.getElementById('videoPIP').style.display = 'none';
+  document.getElementById('warnOverlay').classList.remove('show');
+  document.exitFullscreen?.().catch(() => {});
+
+  endTime = new Date();
+
+  // Score MCQs only (out of 20). Written tasks are reviewed by admin.
+  let mcqScore = 0;
+  const mcqDetails = [];
+  const writtenAnswers = [];
+
+  questions.forEach((q, i) => {
+    if (q.type === 'mcq') {
+      const given = answers[i];
+      const correct = given === q.ans;
+      if (correct) mcqScore++;
+      mcqDetails.push({
+        cat: q.catLabel, question: q.q,
+        options: q.opts,
+        givenIndex: given,
+        correctIndex: q.ans,
+        givenText: given !== undefined ? q.opts[given] : '(Not answered)',
+        correctText: q.opts[q.ans],
+        isCorrect: correct
+      });
+    } else {
+      writtenAnswers.push({ question: q.q, answer: answers[i] !== undefined ? answers[i] : '' });
+    }
+  });
+
+  const record = {
+    ...student,
+    mcqScore, totalMCQ: TOTAL_MCQ,
+    writtenAnswers, mcqDetails,
+    tabViolations, faceViolations, forcedSubmit: forced,
+    startTime: startTime ? startTime.toISOString() : '',
+    endTime: endTime ? endTime.toISOString() : '',
+    startTimeDisplay: startTime ? formatDateTime(startTime) : '',
+    endTimeDisplay: endTime ? formatDateTime(endTime) : '',
+    duration: (startTime && endTime) ? formatDuration(endTime - startTime) : '',
+  };
+
+  submissions.push(record);
+  try { localStorage.setItem('sa_tw_submissions', JSON.stringify(submissions)); } catch(e) {}
+  try { localStorage.setItem('sa_tw_completed', 'true'); } catch(e) {}
+
+  showResults();
+}
+
+/* ══ RESULTS — candidates never see scores or correct answers ══ */
+function showResults() {
+  switchScreen(null, null, 'resultsScreen');
+}
+
+/* ══ ADMIN PANEL ══ */
+function openAdmin() {
+  const pass = prompt('Admin password:');
+  if (pass !== 'Tech_nical_Write@2026') { alert('Incorrect password.'); return; }
+  renderAdminTable();
+  document.getElementById('adminOverlay').classList.add('open');
+}
+function closeAdmin() { document.getElementById('adminOverlay').classList.remove('open'); }
+
+function renderAdminTable() {
+  const content = document.getElementById('adminContent');
+  if (!submissions.length) {
+    content.innerHTML = '<p style="color:var(--muted);font-size:0.88rem;">No submissions yet.</p>';
+    return;
+  }
+  content.innerHTML = `
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;">
+      Total submissions: <strong>${submissions.length}</strong>
+    </p>
+    <div style="overflow-x:auto;">
+      <table class="admin-table">
+        <thead><tr>
+          <th>Name</th><th>Email</th><th>Phone</th><th>Org/College</th><th>Exp.</th>
+          <th>MCQ Score</th><th>Tab Viol.</th><th>Face Viol.</th><th>Forced</th>
+          <th>Start Time</th><th>End Time</th><th>Duration</th><th>Details</th>
+        </tr></thead>
+        <tbody>
+          ${submissions.map((s, idx) => `
+            <tr>
+              <td>${s.name}</td>
+              <td>${s.email}</td>
+              <td>${s.phone}</td>
+              <td>${s.org}</td>
+              <td>${s.experience}</td>
+              <td><strong>${s.mcqScore}/${s.totalMCQ}</strong></td>
+              <td>${s.tabViolations ?? 0}</td>
+              <td>${s.faceViolations ?? 0}</td>
+              <td>${s.forcedSubmit ? 'Yes' : 'No'}</td>
+              <td style="white-space:nowrap;">${s.startTimeDisplay || '-'}</td>
+              <td style="white-space:nowrap;">${s.endTimeDisplay || '-'}</td>
+              <td style="white-space:nowrap;">${s.duration || '-'}</td>
+              <td><button class="detail-btn" onclick="openDetail(${idx})">View</button></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ══ CANDIDATE DETAIL (Admin only — full Q&A breakdown) ══ */
+function openDetail(idx) {
+  const s = submissions[idx];
+  document.getElementById('detailTitle').textContent = `${s.name} — Detailed Review`;
+
+  let html = `
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;">
+      ${s.email} &nbsp;|&nbsp; ${s.phone} &nbsp;|&nbsp; ${s.org} &nbsp;|&nbsp; Exp: ${s.experience}<br>
+      MCQ Score: <strong>${s.mcqScore}/${s.totalMCQ}</strong> &nbsp;|&nbsp;
+      Started: ${s.startTimeDisplay} &nbsp;|&nbsp; Ended: ${s.endTimeDisplay} &nbsp;|&nbsp; Duration: ${s.duration}
+    </p>
+    <h3 style="font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:10px;">Written Responses</h3>
+  `;
+
+  s.writtenAnswers.forEach((w, i) => {
+    html += `
+      <div class="dq-block">
+        <div class="dq-q">Q${i+1}. ${w.question}</div>
+        <div class="dq-written-ans">${w.answer && w.answer.trim() ? escapeHtml(w.answer) : '(No answer provided)'}</div>
+      </div>
+    `;
+  });
+
+  html += `<h3 style="font-family:'Syne',sans-serif;font-size:1rem;margin:18px 0 10px;">MCQ Breakdown</h3>`;
+
+  s.mcqDetails.forEach((m, i) => {
+    html += `
+      <div class="dq-block">
+        <div class="dq-q">[${m.cat}] Q${i+1}. ${m.question}</div>
+        <div class="dq-ans">Candidate's answer: <span class="${m.isCorrect ? 'dq-correct' : 'dq-wrong'}">${m.givenText}</span></div>
+        ${!m.isCorrect ? `<div class="dq-ans">Correct answer: <span class="dq-correct">${m.correctText}</span></div>` : ''}
+      </div>
+    `;
+  });
+
+  document.getElementById('detailContent').innerHTML = html;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail() { document.getElementById('detailOverlay').classList.remove('open'); }
+
+/* ══ EXCEL EXPORT — full details for admin ══ */
+function exportToExcel() {
+  if (!submissions.length) { alert('No data to export.'); return; }
+
+  const rows = submissions.map(s => {
+    const row = {
+      'Name': s.name,
+      'Email': s.email,
+      'Phone': s.phone,
+      'Organization / College': s.org,
+      'Experience': s.experience,
+      'MCQ Score': `${s.mcqScore}/${s.totalMCQ}`,
+      'MCQ %': `${Math.round((s.mcqScore / s.totalMCQ) * 100)}%`,
+      'Tab Violations': s.tabViolations ?? 0,
+      'Face Violations': s.faceViolations ?? 0,
+      'Forced Submit': s.forcedSubmit ? 'Yes' : 'No',
+      'Start Time': s.startTimeDisplay,
+      'End Time': s.endTimeDisplay,
+      'Duration': s.duration,
+    };
+    s.writtenAnswers.forEach((w, i) => {
+      row[`Written Q${i+1}`] = w.question;
+      row[`Written Answer ${i+1}`] = w.answer || '';
+    });
+    row['MCQ Detailed Review'] = s.mcqDetails.map((m, i) =>
+      `Q${i+1} [${m.cat}]: ${m.question} | Given: ${m.givenText} | Correct: ${m.correctText} | ${m.isCorrect ? 'CORRECT' : 'WRONG'}`
+    ).join(' || ');
+    return row;
+  });
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Results');
+  XLSX.writeFile(wb, `StepAhead_TechWriter_Assessment_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+/* ══ SCREEN SWITCHER ══ */
+function switchScreen(screenId, examId, resultsId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('examScreen').classList.remove('active');
+  document.getElementById('resultsScreen').classList.remove('active');
+
+  if (screenId) {
+    document.getElementById(screenId).classList.add('active');
+  } else if (examId) {
+    const el = document.getElementById('examScreen');
+    el.style.display = 'flex';
+    el.classList.add('active');
+  } else if (resultsId) {
+    const el = document.getElementById('resultsScreen');
+    el.style.display = 'flex';
+    el.classList.add('active');
+  }
+}
+</script>
+</body>
+</html>
